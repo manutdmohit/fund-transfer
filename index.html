@@ -217,9 +217,9 @@
 
             if (transferred) {
               successMessage.style.display = 'block';
-              successMessage.textContent = `Transferred $${formatCurrency(
+              successMessage.textContent = `Transferring fund worth $${formatCurrency(
                 amount
-              )} to ${username}`;
+              )} to ${username} in 24 hours`;
 
               // Update the available balance
               availableBalance -= amount;
@@ -254,7 +254,11 @@
         function simulateFundTransfer(username, amount) {
           // Here, you can place your actual fund transfer logic.
           // For simplicity, we'll assume the transfer is always successful.
-          console.log(`Transferred $${formatCurrency(amount)} to ${username}`);
+          console.log(
+            `Transferring amount $${formatCurrency(
+              amount
+            )} to ${username} within 24 hours`
+          );
           return true;
         }
 
