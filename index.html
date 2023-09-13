@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fund Transfer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f0f0f0;
+      }
+
+      .logo {
+        background: url('https://cdn.pixabay.com/photo/2015/05/26/09/37/paypal-784403_1280.png')
+          no-repeat center center;
+        background-size: contain;
+        width: 150px;
+        height: 80px;
+        margin: 20px 0;
+      }
+
+      .container {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        text-align: center;
+        max-width: 80%;
+      }
+
+      h1 {
+        font-size: 28px;
+        margin-bottom: 20px;
+        color: #007bff;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      label {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 10px;
+        color: #333;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 18px;
+      }
+
+      button {
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 20px;
+        margin-top: 20px;
+        cursor: pointer;
+        font-size: 18px;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      p {
+        font-size: 18px;
+        color: green;
+        display: none;
+        font-weight: 600;
+        margin-top: 20px;
+        padding: 10px;
+        border: 2px solid #4caf50;
+        background-color: #e9f6ec;
+        border-radius: 4px;
+      }
+
+      .available-amount {
+        font-size: 18px;
+        margin-top: 20px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .payment-methods {
+        margin-bottom: 20px;
+      }
+
+      .payment-method {
+        display: inline-block;
+        margin: 0 10px;
+        width: 50px;
+        height: auto;
+      }
+
+      /* Responsive Media Queries */
+      @media screen and (max-width: 768px) {
+        .container {
+          max-width: 90%;
+        }
+        h1 {
+          font-size: 24px;
+        }
+        button {
+          font-size: 16px;
+        }
+      }
+
+      @media screen and (max-width: 480px) {
+        .container {
+          max-width: 95%;
+        }
+        h1 {
+          font-size: 20px;
+        }
+        button {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="logo"></div>
+    <div class="payment-methods">
+      <img
+        src="https://logos-download.com/wp-content/uploads/2016/03/Mastercard_Logo_2019-700x433.png"
+        alt="MasterCard"
+        class="payment-method"
+      />
+      <img
+        src="https://logos-download.com/wp-content/uploads/2016/02/Visa_Logo_2014-700x227.png"
+        alt="Visa"
+        class="payment-method"
+      />
+      <!-- Add more payment method image URLs here -->
+    </div>
+    <div class="container">
+      <h1>Transfer Funds</h1>
+      <div class="available-amount">
+        Available Amount: $<span id="availableBalance">415,188,350</span>
+        <!-- Replace with the actual available balance -->
+      </div>
+      <form id="transferForm">
+        <label for="username">Username:</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="Enter username"
+        />
+        <label for="amount">Amount (in dollars):</label>
+        <input
+          type="text"
+          id="amount"
+          name="amount"
+          placeholder="Enter amount (e.g., 1,000,000)"
+        />
+        <button type="button" id="transferButton">Transfer Funds</button>
+      </form>
+      <p id="successMessage"></p>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const transferForm = document.getElementById('transferForm');
+        const transferButton = document.getElementById('transferButton');
+        const successMessage = document.getElementById('successMessage');
+        const availableBalanceElement =
+          document.getElementById('availableBalance');
+        const usernameInput = document.getElementById('username');
+        const amountInput = document.getElementById('amount');
+
+        // Initialize the available balance (replace with the actual available balance)
+        let availableBalance = 415188350;
+        availableBalanceElement.textContent = formatCurrency(availableBalance);
+
+        // Function to handle form submission
+        function handleFormSubmit() {
+          // Get user input values
+          const username = usernameInput.value;
+          const amountInputValue = amountInput.value;
+          const amount = parseCurrency(amountInputValue);
+
+          // Validate input (you can add more robust validation as needed)
+          if (!username || isNaN(amount) || amount <= 0) {
+            alert('Please enter a valid username and a positive amount.');
+            return;
+          }
+
+          // Check if the transfer amount is within the available balance
+          if (amount > availableBalance) {
+            alert('Insufficient funds.');
+            return;
+          }
+
+          // Disable the button to prevent multiple clicks during the delay
+          transferButton.disabled = true;
+
+          // Simulate a fund transfer with a delay (you can replace this with your actual logic)
+          setTimeout(function () {
+            const transferred = simulateFundTransfer(username, amount);
+
+            if (transferred) {
+              successMessage.style.display = 'block';
+              successMessage.textContent = `Transferred $${formatCurrency(
+                amount
+              )} to ${username}`;
+
+              // Update the available balance
+              availableBalance -= amount;
+              availableBalanceElement.textContent =
+                formatCurrency(availableBalance);
+
+              // Reset the form
+              transferForm.reset();
+
+              // Re-enable the button after the delay
+              transferButton.disabled = false;
+            }
+          }, 2000); // 2000 milliseconds (2 seconds) delay
+        }
+
+        // Add a key event listener for the Enter key
+        usernameInput.addEventListener('keyup', function (event) {
+          if (event.key === 'Enter') {
+            handleFormSubmit();
+          }
+        });
+
+        amountInput.addEventListener('keyup', function (event) {
+          if (event.key === 'Enter') {
+            handleFormSubmit();
+          }
+        });
+
+        transferButton.addEventListener('click', handleFormSubmit);
+
+        // Function to simulate fund transfer (replace with actual logic)
+        function simulateFundTransfer(username, amount) {
+          // Here, you can place your actual fund transfer logic.
+          // For simplicity, we'll assume the transfer is always successful.
+          console.log(`Transferred $${formatCurrency(amount)} to ${username}`);
+          return true;
+        }
+
+        // Function to parse currency formatted as "415,188,350" to a number
+        function parseCurrency(currency) {
+          return parseFloat(currency.replace(/,/g, ''));
+        }
+
+        // Function to format a number as currency with commas, e.g., "415,188,350"
+        function formatCurrency(number) {
+          return number.toLocaleString(undefined, { maximumFractionDigits: 2 });
+        }
+      });
+    </script>
+  </body>
+</html>
