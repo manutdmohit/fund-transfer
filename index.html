@@ -132,6 +132,75 @@
           font-size: 14px;
         }
       }
+
+      /* Modal */
+      /* Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1;
+      }
+
+      .modal-content {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        text-align: center;
+        /* max-width: 80%;
+         */
+        width: 15%;
+        margin: 10px auto;
+      }
+
+      .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+        cursor: pointer;
+        color: #888;
+      }
+
+      /* Close Button */
+      #closeModal {
+        color: rgb(206, 0, 0);
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      #closeModal:hover,
+      #closeModal:focus {
+        color: rgb(206, 0, 0);
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      /* Responsive Modal Styles */
+      @media screen and (max-width: 768px) {
+        .modal-content {
+          width: 50%; /* Adjust the width as needed */
+          margin: 10px auto; /* Center the modal vertically and horizontally */
+        }
+      }
+
+      @media screen and (max-width: 480px) {
+        .modal-content {
+          width: 50%; /* Adjust the width as needed */
+          margin: 10px auto; /* Center the modal vertically and horizontally */
+        }
+      }
     </style>
   </head>
   <body>
@@ -172,7 +241,13 @@
         />
         <button type="button" id="transferButton">Transfer Funds</button>
       </form>
-      <p id="successMessage"></p>
+      <!-- Modal -->
+      <div class="modal" id="myModal">
+        <div class="modal-content">
+          <span class="close" id="closeModal">&times;</span>
+          <p id="modalMessage"></p>
+        </div>
+      </div>
     </div>
 
     <script>
@@ -184,6 +259,9 @@
           document.getElementById('availableBalance');
         const usernameInput = document.getElementById('username');
         const amountInput = document.getElementById('amount');
+        const modal = document.getElementById('myModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalMessage = document.getElementById('modalMessage');
 
         // Initialize the available balance (replace with the actual available balance)
         let availableBalance = 415188350;
@@ -208,18 +286,18 @@
             return;
           }
 
-          // Disable the button to prevent multiple clicks during the delay
-          transferButton.disabled = true;
+          // Display the modal message
+          modal.style.display = 'block';
 
           // Simulate a fund transfer with a delay (you can replace this with your actual logic)
           setTimeout(function () {
             const transferred = simulateFundTransfer(username, amount);
 
             if (transferred) {
-              successMessage.style.display = 'block';
-              successMessage.textContent = `Transferring fund worth $${formatCurrency(
+              modalMessage.style.display = 'block';
+              modalMessage.innerText = `Transferring fund worth $${formatCurrency(
                 amount
-              )} to ${username} in 24 hours`;
+              )} to ${username} within 24 hours`;
 
               // Update the available balance
               availableBalance -= amount;
@@ -228,13 +306,9 @@
 
               // Reset the form
               transferForm.reset();
-
-              // Re-enable the button after the delay
-              transferButton.disabled = false;
             }
-          }, 2000); // 2000 milliseconds (2 seconds) delay
+          }, 2000);
         }
-
         // Add a key event listener for the Enter key
         usernameInput.addEventListener('keyup', function (event) {
           if (event.key === 'Enter') {
@@ -255,7 +329,7 @@
           // Here, you can place your actual fund transfer logic.
           // For simplicity, we'll assume the transfer is always successful.
           console.log(
-            `Transferring amount $${formatCurrency(
+            `Transferring fund worth $${formatCurrency(
               amount
             )} to ${username} within 24 hours`
           );
@@ -271,6 +345,18 @@
         function formatCurrency(number) {
           return number.toLocaleString(undefined, { maximumFractionDigits: 2 });
         }
+
+        // Close the modal when the close button is clicked
+        closeModal.addEventListener('click', function () {
+          modal.style.display = 'none';
+        });
+
+        // Close the modal when the user clicks outside of it
+        window.addEventListener('click', function (event) {
+          if (event.target == modal) {
+            modal.style.display = 'none';
+          }
+        });
       });
     </script>
   </body>
